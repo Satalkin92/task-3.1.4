@@ -1,41 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta charset="UTF-8">
-  <title></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<title>Registration</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/}" th:object="${user}">
-  <label for="username">Username: </label>
-  <input type="text" th:field="*{username}" id="username"/>
-  <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">UsernameError</p>
-  <br>
-  <label for="firstName">First_Name: </label>
-  <input type="text" th:field="*{firstName}" id="firstName">
-  <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">FirstNameError</p>
-  <br>
-  <label for="lastName">Last_Name: </label>
-  <input type="text" th:field="*{lastName}" id="lastName">
-  <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">LastNameError</p>
-  <br>
-  <label for="age">Age: </label>
-  <input type="text" th:field="*{age}" id="age">
-  <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}">AgeError</p>
-  <br>
-  <label for="password">Password: </label>
-  <input type="text" th:field="*{password}" id="password"/>
-  <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">PasswordError</p>
-  <p>
-    <label>Roles:
-      <input type="checkbox" name="rolesList"
-             th:each="role : ${allRoles}"
-             th:text="${role}"
-             th:value="${role}"
-      />
-    </label>
-  </p>
-  <br>
-  <input type="submit" value="Registration">
-</form>
+    <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+            <th>
+                <div class="text-center">
+                    <h5>Registration</h5>
+                </div>
+            </th>
+        </tr>
+        <td colspan="1">
+            <table class="table table-striped">
+                <tr>
+                    <div class="row justify-content-center">
+                        <div class="col-4 text-center">
+                            <form th:method="POST" th:action="@{/}" th:object="${user}">
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>Username:</b>
+                                    </div>
+                                    <input type="text" class="form-control"
+                                           th:field="*{username}" id="username"/>
+                                    <p th:if="${#fields.hasErrors('username')}"
+                                       th:errors="*{username}">
+                                        UsernameError</p>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>First
+                                        name:</b></div>
+                                    <input type="text" class="form-control"
+                                           th:field="*{firstName}" id="firstName"/>
+                                    <p th:if="${#fields.hasErrors('firstName')}"
+                                       th:errors="*{firstName}">
+                                        UsernameError</p>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>Last
+                                        name:</b></div>
+                                    <input type="text" class="form-control"
+                                           th:field="*{lastName}" id="lastName"/>
+                                    <p th:if="${#fields.hasErrors('lastName')}"
+                                       th:errors="*{lastName}">
+                                        UsernameError</p>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>Age:</b>
+                                    </div>
+                                    <input type="number" class="form-control" th:field="*{age}"
+                                           id="age"/>
+                                    <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}">
+                                        UsernameError</p>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>Password:</b>
+                                    </div>
+                                    <input type="text" class="form-control"
+                                           th:field="*{password}" id="password"/>
+                                    <p th:if="${#fields.hasErrors('password')}"
+                                       th:errors="*{password}">
+                                        UsernameError</p>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6 container text-center"><b>Roles:</b>
+                                    </div>
+                                    <input type="checkbox" name="rolesList"
+                                           th:each="role:${allRoles}"
+                                           th:text="${role}"
+                                           th:value="${role}"/></p>
+                                </div>
+                                <input type="submit" class="btn-success btn-sm"
+                                       value="Add new user">
+                            </form>
+                        </div>
+                    </div>
+                </tr>
+            </table>
+        </td>
+        </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 </body>
 </html>

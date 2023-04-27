@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.model.Role;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -20,7 +19,6 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
@@ -31,14 +29,5 @@ public class RoleServiceImp implements RoleService {
         roleRepository.save(role);
     }
 
-    @Transactional
-    @PostConstruct
-    public void createRoles() {
-        List<Role> role = roleRepository.findAll();
-        if (role.isEmpty()) {
-            addRole(new Role("ROLE_ADMIN"));
-            addRole(new Role("ROLE_USER"));
-        }
-    }
-
 }
+

@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
@@ -24,46 +23,69 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping()
+    @GetMapping("/admin")
     public String printUsers(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.getUsers());
         model.addAttribute("newUser", new User());
         model.addAttribute("allRoles", roleService.getAllRoles());
         model.addAttribute("user", userService.findUserByUsername(principal.getName()).orElseThrow());
-        return "admin/admin";
+        return "admin";
     }
 
-    @PostMapping()
+    @PostMapping("/admin")
     public String addUser(@ModelAttribute("user") @Valid User user, @RequestParam("rolesList") String[] roles,
                           BindingResult br) {
         if (br.hasErrors()) {
-            return "admin/admin";
+            return "admin";
         }
         userService.addUser(user, roles);
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/get")
+    @GetMapping("/admin/{id}/get")
     public String getUser(ModelMap model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUser(id));
         model.addAttribute("allRoles", roleService.getAllRoles());
-        return "admin/admin";
+        return "admin";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/admin/{id}")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult br,
                              @PathVariable("id") Long id, @RequestParam("rolesList") String[] roles) {
         if (br.hasErrors()) {
-            return "admin/admin";
+            return "admin";
         }
         userService.updateUser(id, user, roles);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public String dropUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/index")
+    public String getStartPage() {
+        return "index";
+    }
+
+
+    @PostMapping()
+    public String registrationUser(@ModelAttribute("user") @Valid User user, @RequestParam("rolesList") String[] roles,
+                                   BindingResult br) {
+        if (br.hasErrors()) {
+            return "registration";
+        }
+        userService.addUser(user, roles);
+        return "redirect:/login";
+    }
+
+    @GetMapping("/registration")
+    public String registrationForm(ModelMap model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("allRoles", roleService.getAllRoles());
+        return "registration";
     }
 
 }

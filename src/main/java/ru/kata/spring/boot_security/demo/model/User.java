@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
     @NotEmpty(message = "This field can not be empty!")
-    @Column(name = "username")
+    @Column(unique = true, name = "username")
     private String username;
     @NotEmpty(message = "This field can not be empty!")
     @Column(name = "password")

@@ -9,9 +9,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.dao.RoleRepository;
+import ru.kata.spring.boot_security.demo.model.Role;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -19,12 +23,15 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SuccessUserHandler successUserHandler;
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, @Lazy UserService userService) {
-        this.userService = userService;
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, RoleRepository roleRepository,
+                            @Lazy UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -45,12 +52,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(getPasswordEncoder());
     }
+
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public void createRoles() {
+        List<Role> list = roleRepository.findAll();
+        if (list.isEmpty()) {
+            roleRepository.save(new Role("ROLE_ADMIN"));
+            roleRepository.save(new Role("ROLE_USER"));
+        }
     }
 
 }

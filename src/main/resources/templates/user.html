@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,9 +33,11 @@
     <div class="row">
         <div class="col-2 vh-100">
             <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-            <a href="/admin">Admin</a>
+                <a href="/admin">Admin</a>
             </div>
-            <a href="/user">User</a>
+            <div>
+                <a href="/user">User</a>
+            </div>
         </div>
         <div class="col-10" style="background-color: #F9F8F8">
             <div class="col">
