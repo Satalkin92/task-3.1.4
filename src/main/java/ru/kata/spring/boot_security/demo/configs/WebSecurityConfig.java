@@ -12,26 +12,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kata.spring.boot_security.demo.dao.RoleRepository;
-import ru.kata.spring.boot_security.demo.model.Role;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final SuccessUserHandler successUserHandler;
     private final UserDetailsService userDetailsService;
-    private final RoleRepository roleRepository;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, RoleRepository roleRepository,
-                            @Lazy UserDetailsService userDetailsService) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, @Lazy UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
-        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -40,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/index", "/registration", "/").permitAll()
+                .antMatchers("/index").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
@@ -59,15 +51,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public void createRoles() {
-        List<Role> list = roleRepository.findAll();
-        if (list.isEmpty()) {
-            roleRepository.save(new Role("ROLE_ADMIN"));
-            roleRepository.save(new Role("ROLE_USER"));
-        }
     }
 
 }

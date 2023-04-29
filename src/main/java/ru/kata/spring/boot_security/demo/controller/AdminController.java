@@ -8,22 +8,26 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
+    private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService, UserValidator userValidator) {
         this.userService = userService;
         this.roleService = roleService;
+        this.userValidator = userValidator;
     }
 
-    @GetMapping("/admin")
+    @GetMapping()
     public String printUsers(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.getUsers());
         model.addAttribute("newUser", new User());
@@ -32,60 +36,38 @@ public class AdminController {
         return "admin";
     }
 
-    @PostMapping("/admin")
+    @PostMapping()
     public String addUser(@ModelAttribute("user") @Valid User user, @RequestParam("rolesList") String[] roles,
                           BindingResult br) {
-        if (br.hasErrors()) {
-            return "admin";
+        userValidator.validate(user, br);
+        if (br.hasErrors()){
+            return "redirect:/admin";
         }
         userService.addUser(user, roles);
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/{id}/get")
+    @GetMapping("/{id}/get")
     public String getUser(ModelMap model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUser(id));
         model.addAttribute("allRoles", roleService.getAllRoles());
         return "admin";
     }
 
-    @PatchMapping("/admin/{id}")
+    @PatchMapping("/{id}")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult br,
                              @PathVariable("id") Long id, @RequestParam("rolesList") String[] roles) {
-        if (br.hasErrors()) {
-            return "admin";
+        if (br.hasErrors()){
+            return "redirect:/admin";
         }
         userService.updateUser(id, user, roles);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/{id}")
     public String dropUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
-    }
-
-    @GetMapping("/index")
-    public String getStartPage() {
-        return "index";
-    }
-
-
-    @PostMapping()
-    public String registrationUser(@ModelAttribute("user") @Valid User user, @RequestParam("rolesList") String[] roles,
-                                   BindingResult br) {
-        if (br.hasErrors()) {
-            return "registration";
-        }
-        userService.addUser(user, roles);
-        return "redirect:/login";
-    }
-
-    @GetMapping("/registration")
-    public String registrationForm(ModelMap model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "registration";
     }
 
 }

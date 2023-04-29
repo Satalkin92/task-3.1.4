@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
     @NotEmpty(message = "This field can not be empty!")
-    @Column(unique = true, name = "username")
+    @Column(name = "username",length = 200, unique = true)
     private String username;
     @NotEmpty(message = "This field can not be empty!")
     @Column(name = "password")
@@ -136,12 +136,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, username);
     }
 
 }
